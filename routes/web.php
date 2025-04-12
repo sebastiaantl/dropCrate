@@ -1,11 +1,14 @@
 <?php
 
+use App\Http\Controllers\FileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
+
+Route::post('/upload', [FileController::class, 'store'])->name('upload');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {

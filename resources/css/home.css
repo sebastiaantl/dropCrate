@@ -1,0 +1,8 @@
+.background{
+
+    background-image: url('/storage/bg.png');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+
+}

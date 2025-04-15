@@ -56,7 +56,7 @@ export default function UploadForm(){
             <input
               type="file"
               id="file"
-              className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 hover:cursor-pointer"
               onChange={ (e) => setFile(e.target.files?.[0] || null)}
               required
             />
@@ -79,7 +79,7 @@ export default function UploadForm(){
           <input
             type="submit"
             value={uploading ? "Uploading..." : "Generate Shareable Link"}
-            className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition font-semibold"
+            className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition font-semibold hover:cursor-pointer hover:bg-sky-500"
           />
 
             {link && (

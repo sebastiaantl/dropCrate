@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\File;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
 
 class FileController extends Controller
 {
@@ -14,7 +16,7 @@ class FileController extends Controller
 
         $request->validate([
             'file' => 'required|file|mimes:pdf,png,jpeg,jpg,gif,zip,txt|max:10240',
-            'password' => 'optional|string'
+            'password' => 'nullable|string'
         ]);
 
         $uploadedFile = $request->file('file');
@@ -26,7 +28,7 @@ class FileController extends Controller
             'stored_filename' => $storedName,
             'path' => $path,
             'short_url' => Str::random(6),
-            'password' => $request->input('password'),
+            'password' => Hash::make($request->input('password')),
             'expires_at' => now()->addDays(1),
         ]);
 
@@ -35,4 +37,38 @@ class FileController extends Controller
             'link' => url('/f/' . $file->short_url),
         ]);
     }
+
+    public function show(Request $request, $short_url){
+
+        $file = File::where('short_url', $short_url)->firstOrFail();
+
+
+        return Inertia::render('show', ['file' => $file, 'locked' => $file['password'] == null ? false : true]);
+
+
+    }
+
+
+    public function download(Request $request, $short_url){
+
+        $file = File::where('short_url', $short_url)->firstOrFail();
+
+        if ($file['password'] != null){
+
+            $validated = $request->validate([
+                'password' => 'required|string'
+            ]);
+
+            if (!Hash::check($validated['password'], $file['password'],)){
+                return response()->json([
+                    'message' => 'Incorrect password.',
+                ], 403);
+            }
+
+        }
+
+        return Storage::download($file['path'], $file['original_filename']);
+
+    }
+
 }

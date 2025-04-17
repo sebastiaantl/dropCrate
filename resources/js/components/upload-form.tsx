@@ -50,8 +50,11 @@ export default function UploadForm(){
           <h1 className="text-2xl font-bold text-center text-gray-800">DropCrate File Share</h1>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="file" className="text-sm font-medium text-gray-700">
+            <label htmlFor="file" className="text-md font-bold text-gray-700">
               Upload File
+            </label>
+            <label className="text-xs font-medium">
+            Max 10 MB - allowed: PDF, JPG, PNG, ZIP, TXT
             </label>
             <input
               type="file"

@@ -15,20 +15,21 @@ class FileController extends Controller
     public function store(Request $request){
 
         $request->validate([
-            'file' => 'required|file|mimes:pdf,png,jpeg,jpg,gif,zip,txt|max:10240',
+            'file' => 'required|file|mimes:pdf,png,jpeg,jpg,zip,txt|max:10240',
             'password' => 'nullable|string'
         ]);
 
         $uploadedFile = $request->file('file');
         $storedName = (string) Str::uuid() . '.' . $uploadedFile->getClientOriginalExtension();
-        $path = Storage::disk('local')->putFileAs('uploads', $uploadedFile, $storedName);
+        $path = Storage::disk('uploads')->putFileAs('', $uploadedFile, $storedName);
+        $password = $request->input('password') == null ? null : Hash::make($request->input('password'));
 
         $file = File::create([
             'original_filename' => $uploadedFile->getClientOriginalName(),
             'stored_filename' => $storedName,
             'path' => $path,
             'short_url' => Str::random(6),
-            'password' => Hash::make($request->input('password')),
+            'password' => $password,
             'expires_at' => now()->addDays(1),
         ]);
 
@@ -66,9 +67,7 @@ class FileController extends Controller
             }
 
         }
-
-        return Storage::download($file['path'], $file['original_filename']);
-
+        return Storage::disk('uploads')->download($file['stored_filename'], $file['original_filename']);
     }
 
 }
